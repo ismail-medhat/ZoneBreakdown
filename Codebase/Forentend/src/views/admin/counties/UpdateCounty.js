@@ -3,6 +3,17 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Autocomplete from "react-google-autocomplete";
+import { MapContainer, TileLayer, Popup, Marker } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+  iconUrl: require("leaflet/dist/images/marker-icon.png"),
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+});
 
 function UpdateCounty() {
   const navigate = useNavigate();
@@ -71,55 +82,78 @@ function UpdateCounty() {
       .catch((err) => console.log(err));
   }
   return (
-    <div className="d-flex bg-primary p-3 justify-content-center align-items-center">
+    <div className="container-fluid bg-primary p-3 justify-content-center align-items-center">
       {load && (
-        <div className="w-50 bg-white rounded p-3">
-          <form onSubmit={handleSubmit}>
-            <h2>Update County</h2>
-            <div className="mb-2">
-              <label htmlFor="name">Name</label>
-              <Autocomplete
-                className="form-control"
-                apiKey={"AIzaSyAH82XtWoXIcRBAgBgj_wzk5PE0-T50TNU"}
-                onPlaceSelected={(place) => {
-                  handleOnPlaceSelect(place);
-                  console.log(place);
-                }}
-                options={{
-                  types: ["(regions)"],
-                  componentRestrictions: { country: "us" },
-                }}
-                defaultValue={name}
+        <div className="row align-items-start">
+          <div
+            style={{ height: "550px" }}
+            className="col-6 bg-white rounded p-3"
+          >
+            <MapContainer
+              style={{ height: "100%", width: "100%" }}
+              center={[40.8966, -77.8389]}
+              zoom={4}
+              scrollWheelZoom={false}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="zipcode">Zip/Code</label>
-              <input
-                type="text"
-                placeholder="Enter County Zip Code"
-                className="form-control"
-                value={zipcode}
-                onChange={(e) => setZipcode(e.target.value)}
-              />
-            </div>
-            <div className="mb-2">
-              <label htmlFor="zone">Zone Name</label>
-              <select
-                onChange={(e) => setZoneId(e.target.value)}
-                className="form-control"
-                id="inputGroupSelect01"
-                value={zoneId}
-              >
-                {zones?.map((zone, i) => (
-                  <option key={zone?.ID} value={zone?.ID}>
-                    {zone?.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+              <Marker position={[coordinate?.lat, coordinate.lng]}>
+                <Popup>{name}</Popup>
+              </Marker>
+            </MapContainer>
+          </div>
+          <div className="col-6">
+            <div className="bg-white rounded p-3">
+              <form onSubmit={handleSubmit}>
+                <h2>Update County</h2>
+                <div className="mb-2">
+                  <label htmlFor="name">Name</label>
+                  <Autocomplete
+                    className="form-control"
+                    apiKey={"AIzaSyAH82XtWoXIcRBAgBgj_wzk5PE0-T50TNU"}
+                    onPlaceSelected={(place) => {
+                      handleOnPlaceSelect(place);
+                      console.log(place);
+                    }}
+                    options={{
+                      types: ["(regions)"],
+                      componentRestrictions: { country: "us" },
+                    }}
+                    defaultValue={name}
+                  />
+                </div>
+                <div className="mb-2">
+                  <label htmlFor="zipcode">Zip/Code</label>
+                  <input
+                    type="text"
+                    placeholder="Enter County Zip Code"
+                    className="form-control"
+                    value={zipcode}
+                    onChange={(e) => setZipcode(e.target.value)}
+                  />
+                </div>
+                <div className="mb-2">
+                  <label htmlFor="zone">Zone Name</label>
+                  <select
+                    onChange={(e) => setZoneId(e.target.value)}
+                    className="form-control"
+                    id="inputGroupSelect01"
+                    value={zoneId}
+                  >
+                    {zones?.map((zone, i) => (
+                      <option key={zone?.ID} value={zone?.ID}>
+                        {zone?.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            <button className="btn btn-success">update</button>
-          </form>
+                <button className="btn btn-success">update</button>
+              </form>
+            </div>
+          </div>
         </div>
       )}
     </div>

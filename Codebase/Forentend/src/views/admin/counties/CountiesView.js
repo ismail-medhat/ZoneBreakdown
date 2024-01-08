@@ -37,11 +37,11 @@ function CountiesView() {
   };
 
   return (
-    <div className="d-flex bg-primary p-3 justify-content-center align-items-center">
-      <div className="w-75 bg-white rounded px-3">
-        <div className="justify-content-center align-items-center m-2">
+    <div className="container-fluid bg-primary p-3 justify-content-center align-items-center">
+      <div className="row align-items-start">
+        <div style={{ height: "550px" }} className="col-6 bg-white rounded p-3">
           <MapContainer
-            style={{ height: "300px", width: "100%" }}
+            style={{ height: "100%", width: "100%" }}
             center={[40.8966, -77.8389]}
             zoom={4}
             scrollWheelZoom={false}
@@ -57,42 +57,49 @@ function CountiesView() {
             ))}
           </MapContainer>
         </div>
-        <Link to={"/admin/counties/create-county"} className="btn btn-success">
-          Add Counties +
-        </Link>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Zip/Code</th>
-              <th>Zone Name</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {counties?.map((county, i) => (
-              <tr key={county?.ID}>
-                <td>{county?.name}</td>
-                <td>{county?.zipcode}</td>
-                <td>{county?.zoneName}</td>
-                <td>
-                  <Link
-                    to={`update-county/${county?.ID}`}
-                    className="btn btn-primary"
-                  >
-                    Update
-                  </Link>
-                  <button
-                    onClick={(e) => handleDeleteCounty(county?.ID)}
-                    className="btn btn-danger ms-2"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="col-6">
+          <div className="bg-white rounded p-3">
+            <Link
+              to={"/admin/counties/create-county"}
+              className="btn btn-success"
+            >
+              Add Counties +
+            </Link>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Zip/Code</th>
+                  <th>Zone Name</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {counties?.map((county, i) => (
+                  <tr key={county?.ID}>
+                    <td>{county?.name}</td>
+                    <td>{county?.zipcode}</td>
+                    <td>{county?.zoneName}</td>
+                    <td>
+                      <Link
+                        to={`update-county/${county?.ID}`}
+                        className="btn btn-primary"
+                      >
+                        Update
+                      </Link>
+                      <button
+                        onClick={(e) => handleDeleteCounty(county?.ID)}
+                        className="btn btn-danger ms-2"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

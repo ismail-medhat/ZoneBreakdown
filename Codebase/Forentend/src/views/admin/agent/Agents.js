@@ -27,9 +27,9 @@ function Agents() {
     <div className="d-flex bg-primary p-3 justify-content-center align-items-center">
       <div className="w-75 bg-white rounded p-3">
         <Link to={"/admin/agents/create-agent"} className="btn btn-success">
-          Add +
+          Add New Agent +
         </Link>
-        <table className="table">
+        <table className="table text-center">
           <thead>
             <tr>
               <th>Name</th>
@@ -37,6 +37,7 @@ function Agents() {
               <th>Password</th>
               <th>Phone</th>
               <th>Max Zone</th>
+              <th>Active Zone</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -48,6 +49,7 @@ function Agents() {
                 <td>{agent?.password}</td>
                 <td>{agent?.phone}</td>
                 <td>{agent?.max_zone}</td>
+                <td>{agent?.active_zone}</td>
                 <td>
                   <Link
                     to={`update-agent/${agent?.ID}`}

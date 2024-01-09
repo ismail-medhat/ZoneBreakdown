@@ -14,6 +14,7 @@ import ZoneView from "./views/admin/zones/ZoneView";
 import CreateZone from "./views/admin/zones/CreateZone";
 import UpdateZone from "./views/admin/zones/UpdateZone";
 import ISAView from "./views/ISAView";
+import AgentView from "./views/AgentView";
 
 function App() {
   return (
@@ -22,7 +23,8 @@ function App() {
         <ToastContainer />
         <Navbar />
         <Routes>
-          <Route path="/" element={<ISAView />}></Route>
+          <Route path="/" element={<ISAView />} />
+          <Route path="/agent-view" element={<AgentView />} />
           <Route path="/admin" element={<AdminLogin />}></Route>
           <Route path="/admin/agents" element={<Agents />}></Route>
           <Route path="/admin/counties" element={<CountiesView />}></Route>

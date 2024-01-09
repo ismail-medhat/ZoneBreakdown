@@ -27,7 +27,7 @@ function Navbar() {
   if (
     window.location.pathname === "/" ||
     window.location.pathname === "/admin" ||
-    window.location.pathname === "/agent"
+    window.location.pathname === "/agent-view"
   ) {
     return null;
   }

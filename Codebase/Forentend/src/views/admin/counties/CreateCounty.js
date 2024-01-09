@@ -2,22 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Autocomplete from "react-google-autocomplete";
-import { MapContainer, TileLayer, Popup, Marker } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-
-delete L.Icon.Default.prototype._getIconUrl;
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-  iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
-});
+import AutoCompletePlaces from "../../../components/AutoCompletePlaces";
+import GoogleMaps from "../../../components/GoogleMap";
 
 function CreateCounty() {
   const navigate = useNavigate();
   const [load, setLoad] = useState(false);
+  const [places, setPlaces] = useState([]);
   const [coordinate, setCoordinate] = useState({
     lat: "",
     lng: "",
@@ -56,57 +47,26 @@ function CreateCounty() {
       .catch((err) => console.log(err));
   }
 
-  const handleOnPlaceSelect = (place) => {
-    const latLng = {
-      lat: place.geometry.location.lat(),
-      lng: place.geometry.location.lng(),
-    };
-    setName(place?.formatted_address);
-    setCoordinate(latLng);
-    console.log("LatLng:", latLng);
-    console.log("formatted_address:", place?.formatted_address);
-  };
-
   return (
     <div className="container-fluid bg-primary p-3 justify-content-center align-items-center">
       {load && (
         <div className="row align-items-start">
           <div
             style={{ height: "550px" }}
-            className="col-6 bg-white rounded p-3"
+            className="col-7 bg-white rounded p-3"
           >
-            <MapContainer
-              style={{ height: "100%", width: "100%" }}
-              center={[40.8966, -77.8389]}
-              zoom={4}
-              scrollWheelZoom={false}
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-               <Marker position={[coordinate?.lat, coordinate.lng]}>
-                  <Popup>{name}</Popup>
-                </Marker>
-            </MapContainer>
+            <GoogleMaps places={places} />
           </div>
-          <div className="col-6">
+          <div className="col-5">
             <div className="bg-white rounded p-3">
               <form onSubmit={handleSubmit}>
                 <h2>Add New Counties</h2>
                 <div className="mb-2">
                   <label htmlFor="name">Name</label>
-                  <Autocomplete
-                    className="form-control"
-                    apiKey={"AIzaSyAH82XtWoXIcRBAgBgj_wzk5PE0-T50TNU"}
-                    onPlaceSelected={(place) => {
-                      handleOnPlaceSelect(place);
-                      console.log(place);
-                    }}
-                    options={{
-                      types: ["(regions)"],
-                      componentRestrictions: { country: "us" },
-                    }}
+                  <AutoCompletePlaces
+                    setPlaces={setPlaces}
+                    setCoordinate={setCoordinate}
+                    setName={setName}
                   />
                 </div>
                 <div className="mb-2">

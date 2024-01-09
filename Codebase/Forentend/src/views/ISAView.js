@@ -1,47 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import Autocomplete from "react-google-autocomplete";
 import { toast } from "react-toastify";
-import { MapContainer, TileLayer, Popup, Marker } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-
-delete L.Icon.Default.prototype._getIconUrl;
-
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-  iconUrl: require("leaflet/dist/images/marker-icon.png"),
-  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
-});
+import GoogleMaps from "../components/GoogleMap";
 
 function ISAView() {
   const [counties, setCounties] = useState([]);
   const [originCounties, setOriginCounties] = useState([]);
-  const [coordinate, setCoordinate] = useState({
-    lat: "",
-    lng: "",
-  });
+  const [places, setPlaces] = useState([]);
+  const [originPlaces, setOriginPlaces] = useState([]);
   const [name, setName] = useState("");
 
-  const handleOnPlaceSelect = (place) => {
-    const latLng = {
-      lat: place.geometry.location.lat(),
-      lng: place.geometry.location.lng(),
-    };
-    setName(place?.formatted_address);
-    setCoordinate(latLng);
-    console.log("LatLng:", latLng);
-    console.log("formatted_address:", place?.formatted_address);
-  };
   const resetSearch = () => {
-    const latLng = {
-      lat: "",
-      lng: "",
-    };
+
     setName("");
-    setCoordinate(latLng);
-    setCounties(originCounties)
-    // window.location.reload();
+    setCounties(originCounties);
   };
 
   useEffect(() => {
@@ -50,30 +22,44 @@ function ISAView() {
       .then((res) => {
         setCounties(res.data);
         setOriginCounties(res.data);
+        let fullPlaces = [];
+        res?.data?.forEach((place) => {
+          fullPlaces.push({
+            id: place?.ID,
+            name: place?.name,
+            position: { lat: place?.lat, lng: place?.lng },
+          });
+        });
+        setPlaces(fullPlaces);
+        setOriginPlaces(fullPlaces);
       })
       .catch((err) => console.log(err));
   }, []);
+
+  const handleSearch = (e) => {
+    setName(e.target.value);
+    if (e.target.value?.length > 0) {
+      setCounties(
+        counties?.filter((county) =>
+          county?.name?.toLowerCase()?.includes(e.target.value.toLowerCase())
+        )
+      );
+      setPlaces(
+        originPlaces?.filter((place) =>
+          place?.name?.toLowerCase()?.includes(e.target.value.toLowerCase())
+        )
+      );
+    } else {
+      setCounties(originCounties);
+      setPlaces(originPlaces);
+    }
+  };
 
   return (
     <div className="container-fluid bg-primary p-3 justify-content-center align-items-center">
       <div className="row align-items-start">
         <div style={{ height: "608px" }} className="col-7 bg-white rounded p-3">
-          <MapContainer
-            style={{ height: "100%", width: "100%" }}
-            center={[40.8966, -77.8389]}
-            zoom={4}
-            scrollWheelZoom={false}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            {counties?.map((county, i) => (
-              <Marker key={county?.ID} position={[county.lat, county.lng]}>
-                <Popup>{county.name}</Popup>
-              </Marker>
-            ))}
-          </MapContainer>
+          <GoogleMaps places={places} />
         </div>
         <div className="col-5">
           <div className=" bg-white rounded p-3">
@@ -89,26 +75,13 @@ function ISAView() {
                   Reset Search
                 </button>
               </div>
-            
+
               <input
                 type="text"
                 placeholder="Search By Counties Name"
                 className="form-control"
                 value={name}
-                onChange={(e) => {
-                  setName(e.target.value);
-                  if (e.target.value?.length > 0) {
-                    setCounties(
-                      counties?.filter((county) =>
-                        county?.name
-                          ?.toLowerCase()
-                          ?.includes(e.target.value.toLowerCase())
-                      )
-                    );
-                  } else {
-                    setCounties(originCounties);
-                  }
-                }}
+                onChange={(e) => handleSearch(e)}
               />
             </div>
             <table className="table">

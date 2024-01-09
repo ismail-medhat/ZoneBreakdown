@@ -196,6 +196,19 @@ app.get("/admin-login", (req, res) => {
   });
 });
 //--------------- End Admin Login API ---------------------
+//--------------- Start Agent View API ---------------------
+app.get("/counties-zone", (req, res) => {
+  const sql = `SELECT zone.* , GROUP_CONCAT(counties.name) AS counties
+  FROM zone 
+  LEFT JOIN counties ON zone.ID = counties.zone_id
+  GROUP BY zone.ID, zone.name`;
+  db.query(sql, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+
+//--------------- End Agent View API ---------------------
 
 app.listen(8081, () => {
   console.log("listening server....");

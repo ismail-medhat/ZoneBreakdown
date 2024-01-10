@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../../config";
 
 function ZoneView() {
   const [zones, setZones] = useState([]);
 
   useEffect(() => {
     axios
-      .get("http://localhost:8081/zones")
+      .get(`${BASE_URL}/zones`)
       .then((res) => setZones(res.data))
       .catch((err) => console.log(err));
   }, []);
@@ -24,7 +25,6 @@ function ZoneView() {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Max Agent Capacity</th>
               <th>Active Agent</th>
               <th>Actions</th>
             </tr>
@@ -33,7 +33,6 @@ function ZoneView() {
             {zones?.map((zone, i) => (
               <tr key={zone?.ID}>
                 <td>{zone?.name}</td>
-                <td>{zone?.max_agent}</td>
                 <td>{zone?.active_agent}</td>
                 <td>
                   <Link

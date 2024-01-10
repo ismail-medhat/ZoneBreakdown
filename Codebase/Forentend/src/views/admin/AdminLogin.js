@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { BASE_URL } from "../../config";
 
 function AdminLogin() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ function AdminLogin() {
   function handleSubmit(event) {
     event.preventDefault();
     axios
-      .get("http://localhost:8081/admin-login", {
+      .get(`${BASE_URL}/admin-login`, {
         email,
       })
       .then((res) => {

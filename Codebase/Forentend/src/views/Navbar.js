@@ -26,8 +26,7 @@ function Navbar() {
 
   if (
     window.location.pathname === "/" ||
-    window.location.pathname === "/admin" ||
-    window.location.pathname === "/agent-view"
+    window.location.pathname === "/admin" 
   ) {
     return null;
   }
@@ -40,9 +39,6 @@ function Navbar() {
       </NavLink>
       <NavLink style={navLinkStyles} className="nav-item" to="admin/counties">
         Counties
-      </NavLink>
-      <NavLink style={navLinkStyles} className="nav-item" to="admin/agents">
-        Agents
       </NavLink>
     </nav>
   );

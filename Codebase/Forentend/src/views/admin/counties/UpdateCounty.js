@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import AutoCompletePlaces from "../../../components/AutoCompletePlaces";
 import GoogleMaps from "../../../components/GoogleMap";
+import { BASE_URL } from "../../../config";
 
 function UpdateCounty() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function UpdateCounty() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8081/county/${id}`)
+      .get(`${BASE_URL}/county/${id}`)
       .then((res) => {
         console.log("county info : ", res.data[0].name);
         const coord = {
@@ -43,7 +44,7 @@ function UpdateCounty() {
       .catch((err) => console.log(err));
 
     axios
-      .get("http://localhost:8081/zones")
+      .get(`${BASE_URL}/zones`)
       .then((res) => {
         setZones(res.data);
         setLoad(true);
@@ -54,7 +55,7 @@ function UpdateCounty() {
   function handleSubmit(event) {
     event.preventDefault();
     axios
-      .put(`http://localhost:8081/update-county/${id}`, {
+      .put(`${BASE_URL}/update-county/${id}`, {
         name,
         zipcode,
         lat: coordinate.lat,
@@ -89,6 +90,7 @@ function UpdateCounty() {
                     setPlaces={setPlaces}
                     setCoordinate={setCoordinate}
                     setName={setName}
+                    setZipcode={setZipcode}
                   />
                 </div>
                 <div className="mb-2">

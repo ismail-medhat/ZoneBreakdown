@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import GoogleMaps from "../../../components/GoogleMap";
+import { BASE_URL } from "../../../config";
 
 function CountiesView() {
   const [counties, setCounties] = useState([]);
@@ -10,7 +11,7 @@ function CountiesView() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8081/counties")
+      .get(`${BASE_URL}/counties`)
       .then((res) => {
         setCounties(res.data);
         let fullPlaces = [];
@@ -19,6 +20,7 @@ function CountiesView() {
             id: place?.ID,
             name: place?.name,
             position: { lat: place?.lat, lng: place?.lng },
+            zone:place?.zoneName
           });
         });
         setPlaces(fullPlaces);
@@ -28,7 +30,7 @@ function CountiesView() {
 
   const handleDeleteCounty = async (id) => {
     try {
-      await axios.delete(`http://localhost:8081/county/${id}`);
+      await axios.delete(`${BASE_URL}/county/${id}`);
       window.location.reload();
       toast.success("county Deleted Successfully");
     } catch (error) {

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import AutoCompletePlaces from "../../../components/AutoCompletePlaces";
 import GoogleMaps from "../../../components/GoogleMap";
+import { BASE_URL } from "../../../config";
 
 function CreateCounty() {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ function CreateCounty() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8081/zones")
+      .get(`${BASE_URL}/zones`)
       .then((res) => {
         setZones(res.data);
         setZoneId(res.data[0]?.ID);
@@ -32,7 +33,7 @@ function CreateCounty() {
   function handleSubmit(event) {
     event.preventDefault();
     axios
-      .post("http://localhost:8081/create-county", {
+      .post(`${BASE_URL}/create-county`, {
         zipcode,
         name,
         lat: coordinate.lat,
@@ -67,6 +68,7 @@ function CreateCounty() {
                     setPlaces={setPlaces}
                     setCoordinate={setCoordinate}
                     setName={setName}
+                    setZipcode={setZipcode}
                   />
                 </div>
                 <div className="mb-2">

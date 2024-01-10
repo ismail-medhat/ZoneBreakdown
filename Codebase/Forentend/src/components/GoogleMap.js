@@ -24,7 +24,7 @@ const bounds = {
   west: -80.5199,
 }; // Coordinates defining the boundary of Pennsylvania
 
-const GoogleMaps = ({ places=[] }) => {
+const GoogleMaps = ({ places = [] }) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: "AIzaSyAH82XtWoXIcRBAgBgj_wzk5PE0-T50TNU",
   });
@@ -64,24 +64,29 @@ const GoogleMaps = ({ places=[] }) => {
           zoom={7}
           options={{
             restriction: {
-            //   latLngBounds: bounds,
-              strictBounds: false,
+              //   latLngBounds: bounds,
+              // strictBounds: false,
             },
           }}
         >
-          {places?.map(({ id, name, position }) => (
+          {places?.map(({ id, name, position, zone }) => (
             <MarkerF
               key={id}
               position={position}
               onClick={() => handleActiveMarker(id)}
-              // icon={{
-              //   url:"https://t4.ftcdn.net/jpg/02/85/33/21/360_F_285332150_qyJdRevcRDaqVluZrUp8ee4H2KezU9CA.jpg",
-              //   scaledSize: { width: 50, height: 50 }
-              // }}
+              icon={
+                id == -1
+                  ? {
+                      url: "https://t4.ftcdn.net/jpg/02/85/33/21/360_F_285332150_qyJdRevcRDaqVluZrUp8ee4H2KezU9CA.jpg",
+                      scaledSize: { width: 30, height: 30 },
+                    }
+                  : {}
+              }
             >
               {activeMarker === id ? (
                 <InfoWindowF onCloseClick={() => setActiveMarker(null)}>
-                  <div>
+                  <div className="text-center">
+                    {zone && <h5>{zone}</h5>}
                     <p>{name}</p>
                   </div>
                 </InfoWindowF>

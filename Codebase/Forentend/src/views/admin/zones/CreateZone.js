@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { BASE_URL } from "../../../config";
 
 function CreateZone() {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ function CreateZone() {
   function handleSubmit(event) {
     event.preventDefault();
     axios
-      .post("http://localhost:8081/create-zone", {
+      .post(`${BASE_URL}/create-zone`, {
         name,
         maxAgent,
       })

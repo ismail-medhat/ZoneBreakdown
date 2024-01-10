@@ -1,81 +1,20 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
+const constants = require("./config")
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "zonebreakdowndb",
+  host: constants.DB_HOST,
+  user: constants.DB_USER,
+  password: constants.DB_PASSWORD,
+  database: constants.DB_NAME,
 });
 
-//--------------- Start Agent API ---------------------------
 
-app.get("/agents", (req, res) => {
-  const sql = "SELECT * FROM agent";
-  db.query(sql, (err, data) => {
-    if (err) return res.json("Error when i get agents data");
-    return res.json(data);
-  });
-});
-
-app.get("/agent/:id", (req, res) => {
-  const id = req.params.id;
-  const sql = `SELECT * FROM agent WHERE ID=${id}`;
-  db.query(sql, (err, data) => {
-    if (err) return res.json("Error when i get agent data");
-    return res.json(data);
-  });
-});
-
-app.delete("/agent/:id", (req, res) => {
-  const id = req.params.id;
-  const sql = `DELETE FROM agent WHERE ID=${id}`;
-  db.query(sql, (err, data) => {
-    if (err) return res.json("Error when i get agent data");
-    return res.json(data);
-  });
-});
-
-app.post("/create-agent", (req, res) => {
-  const sql =
-    "INSERT INTO agent (`name`,`email`,`password`,`phone`,`max_zone`) VALUES (?)";
-  const values = [
-    req.body.name,
-    req.body.email,
-    req.body.password,
-    req.body.phone,
-    req.body.maxZone,
-  ];
-  db.query(sql, [values], (err, data) => {
-    if (err) return res.json("Error when i create agent data");
-    return res.json(data);
-  });
-});
-
-app.put("/update-agent/:id", (req, res) => {
-  const sql =
-    "UPDATE agent SET name=?, email=?, password=? ,phone=? ,max_zone=? WHERE ID=?";
-  const values = [
-    req.body.name,
-    req.body.email,
-    req.body.password,
-    req.body.phone,
-    req.body.maxZone,
-  ];
-  const id = req.params.id;
-  db.query(sql, [...values, id], (err, data) => {
-    if (err) return res.json("Error when i update agent data");
-    return res.json(data);
-  });
-});
-
-//--------------- End Agent API ---------------------------
-//-----------------------------------------------------------
 //--------------- Start Counties API --------------------------
 
 app.get("/counties", (req, res) => {
@@ -167,7 +106,7 @@ app.delete("/zone/:id", (req, res) => {
 });
 
 app.post("/create-zone", (req, res) => {
-  const sql = "INSERT INTO zone (`name`,`max_agent`) VALUES (?)";
+  const sql = "INSERT INTO zone (`name`,`active_agent`) VALUES (?)";
   const values = [req.body.name, req.body.maxAgent];
   db.query(sql, [values], (err, data) => {
     if (err) return res.json("Error when i create zone data");
@@ -176,8 +115,8 @@ app.post("/create-zone", (req, res) => {
 });
 
 app.put("/update-zone/:id", (req, res) => {
-  const sql = "UPDATE zone SET name=?, max_agent=?  WHERE ID=?";
-  const values = [req.body.name, req.body.maxAgent];
+  const sql = "UPDATE zone SET name=?, active_agent=?  WHERE ID=?";
+  const values = [req.body.name, req.body.activeAgent];
   const id = req.params.id;
   db.query(sql, [...values, id], (err, data) => {
     if (err) return res.json("Error when i update zone data");
@@ -210,6 +149,6 @@ app.get("/counties-zone", (req, res) => {
 
 //--------------- End Agent View API ---------------------
 
-app.listen(8081, () => {
+app.listen(constants.DB_PORT, () => {
   console.log("listening server....");
 });

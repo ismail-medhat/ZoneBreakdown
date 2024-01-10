@@ -16,22 +16,36 @@ const AutoCompletePlaces = ({
   setName,
   name = "",
   setPlaces,
+  setZipcode
 }) => {
   const [address, setAddress] = useState(name);
 
   const handleSelect = async (selectedAddress) => {
     const results = await geocodeByAddress(selectedAddress);
-    console.log("results Place:", results[0]?.formatted_address);
-    const latLng = await getLatLng(results[0]);
-    console.log("Selected Place:", latLng);
+    const lat = results[0]?.geometry?.location.lat();
+    const lng = results[0]?.geometry?.location.lng();
+    const latLng = { lat: lat, lng: lng };
+    const address = results[0]?.formatted_address;
+    let postCode = "";
+    await results[0]?.address_components?.forEach((addressObj) => {
+      if (addressObj?.types[0] == "postal_code") {
+        postCode = addressObj?.short_name;
+      }
+    });
+    console.log("results latLng:", latLng);
+    console.log("results address:", address);
     setCoordinate(latLng);
-    setAddress(results[0]?.formatted_address);
-    setName(results[0]?.formatted_address);
+    setAddress(address);
+    setName(address);
+    if(setZipcode){
+      setZipcode(postCode);
+    }
+   
     if (setPlaces) {
       setPlaces([
         {
           id: 1,
-          name: results[0]?.formatted_address,
+          name: address,
           position: latLng,
         },
       ]);
@@ -61,7 +75,10 @@ const AutoCompletePlaces = ({
                 backgroundColor: suggestion.active ? "#41b6e6" : "#fff",
               };
               return (
-                <div {...getSuggestionItemProps(suggestion, { style })}>
+                <div
+                  key={suggestion.description}
+                  {...getSuggestionItemProps(suggestion, { style })}
+                >
                   {suggestion.description}
                 </div>
               );

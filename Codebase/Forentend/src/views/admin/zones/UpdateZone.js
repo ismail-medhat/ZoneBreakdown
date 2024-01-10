@@ -2,20 +2,21 @@ import React, { useEffect, useState,useRef } from "react";
 import axios from "axios";
 import {  useNavigate, useParams } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { BASE_URL } from "../../../config";
 
 function UpdateZone() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [name, setName] = useState("");
-  const [maxAgent, setMaxAgent] = useState("");
+  const [activeAgent, setActiveAgent] = useState("");
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8081/zone/${id}`)
+      .get(`${BASE_URL}/zone/${id}`)
       .then((res) => {
         console.log('zone info : ',res.data[0].name)
         setName(res.data[0]?.name);
-        setMaxAgent(res.data[0]?.max_agent);
+        setActiveAgent(res.data[0]?.active_agent);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -23,9 +24,9 @@ function UpdateZone() {
   function handleSubmit(event) {
     event.preventDefault();
     axios
-      .put(`http://localhost:8081/update-zone/${id}`, {
+      .put(`${BASE_URL}/update-zone/${id}`, {
         name,
-        maxAgent,
+        activeAgent,
       })
       .then((res) => {
         console.log("new zone data :: ", res);
@@ -50,13 +51,13 @@ function UpdateZone() {
             />
           </div>
           <div className="mb-2">
-            <label htmlFor="email">Max Agent Capacity</label>
+            <label htmlFor="email">Active Agents</label>
             <input
               type="text"
               placeholder="Enter Max Agent"
               className="form-control"
-              value={maxAgent}
-              onChange={(e) => setMaxAgent(e.target.value)}
+              value={activeAgent}
+              onChange={(e) => setActiveAgent(e.target.value)}
             />
           </div>
           <button className="btn btn-success">update</button>

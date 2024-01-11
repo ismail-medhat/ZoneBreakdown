@@ -3,7 +3,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import GoogleMaps from "../components/GoogleMap";
 import AutoCompletePlaces from "../components/AutoCompletePlaces";
-import {BASE_URL} from '../config'
+import { BASE_URL } from "../config";
 
 function ISAView() {
   const [load, setLoad] = useState(false);
@@ -51,7 +51,7 @@ function ISAView() {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/counties`)
+      .get(`https://zonebreakdown.000webhostapp.com/getAllCounties.php`)
       .then((res) => {
         setCounties(res.data);
         setOriginCounties(res.data);
@@ -60,8 +60,11 @@ function ISAView() {
           fullPlaces.push({
             id: place?.ID,
             name: place?.name,
-            position: { lat: place?.lat, lng: place?.lng },
-            zone:place?.zoneName
+            position: {
+              lat: parseFloat(place?.lat),
+              lng: parseFloat(place?.lng),
+            },
+            zone: place?.zoneName,
           });
         });
         setPlaces(fullPlaces);

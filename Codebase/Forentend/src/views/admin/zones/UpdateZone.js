@@ -1,7 +1,7 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import {  useNavigate, useParams } from "react-router-dom";
-import { toast } from 'react-toastify';
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { BASE_URL } from "../../../config";
 
 function UpdateZone() {
@@ -12,25 +12,41 @@ function UpdateZone() {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/zone/${id}`)
-      .then((res) => {
-        console.log('zone info : ',res.data[0].name)
-        setName(res.data[0]?.name);
-        setActiveAgent(res.data[0]?.active_agent);
+      .get(`https://zonebreakdown.000webhostapp.com/getZone?zone_id=${id}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       })
-      .catch((err) => console.log(err));
+      .then((res) => {
+        console.log("zone info --- : ", res.data);
+        setName(res.data?.name);
+        setActiveAgent(res.data?.active_agent);
+      })
+      .catch((err) => console.log("zone info error: ", err));
   }, []);
+
+  // useEffect(() => {
+  //   axios
+  //     .get(`${BASE_URL}/zone/${id}`)
+  //     .then((res) => {
+  //       console.log("zone info : ", res.data[0].name);
+  //       setName(res.data[0]?.name);
+  //       setActiveAgent(res.data[0]?.active_agent);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []);
 
   function handleSubmit(event) {
     event.preventDefault();
     axios
-      .put(`${BASE_URL}/update-zone/${id}`, {
-        name,
-        activeAgent,
+      .post(`https://zonebreakdown.000webhostapp.com/updateZone.php`, {
+        id:id,
+        name:name,
+        active_agent:activeAgent,
       })
       .then((res) => {
         console.log("new zone data :: ", res);
-        toast.success("Zone Updated Successfully")
+        toast.success("Zone Updated Successfully");
         navigate("/admin/zones");
       })
       .catch((err) => console.log(err));

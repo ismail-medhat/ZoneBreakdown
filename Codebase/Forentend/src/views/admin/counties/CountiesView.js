@@ -11,7 +11,7 @@ function CountiesView() {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/counties`)
+      .get(`https://zonebreakdown.000webhostapp.com/getAllCounties.php`)
       .then((res) => {
         setCounties(res.data);
         let fullPlaces = [];
@@ -19,8 +19,11 @@ function CountiesView() {
           fullPlaces.push({
             id: place?.ID,
             name: place?.name,
-            position: { lat: place?.lat, lng: place?.lng },
-            zone:place?.zoneName
+            position: {
+              lat: parseFloat(place?.lat),
+              lng: parseFloat(place?.lng),
+            },
+            zone: place?.zoneName,
           });
         });
         setPlaces(fullPlaces);

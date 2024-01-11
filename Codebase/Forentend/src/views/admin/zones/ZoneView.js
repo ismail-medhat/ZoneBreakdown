@@ -9,7 +9,7 @@ function ZoneView() {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/zones`)
+      .get(`https://zonebreakdown.000webhostapp.com/getAllZones.php`)
       .then((res) => setZones(res.data))
       .catch((err) => console.log(err));
   }, []);
